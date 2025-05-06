@@ -1,5 +1,9 @@
+import Tabuleiro
+
 def main():
-    pass
-    # função principal pra iniciar o jogo
+    
+    t = Tabuleiro.Tabuleiro()
+    print(t.tabuleiro[t.index["B2"]].valid(t.tabuleiro))
+
 if __name__ == '__main__':
     main()
