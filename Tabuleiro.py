@@ -10,6 +10,7 @@ class Tabuleiro:
             for i in range(8)
             for j in range(8)
         }
+        print("Criando tabuleiro")
         for i in range(8):
             self.board[1][i] = Peca('P', (1,i))
             self.board[6][i] = Peca('P', (6,i))
@@ -21,7 +22,6 @@ class Tabuleiro:
             self.board[0][col] = Peca(tipo, (0, col))
             self.tabuleiro[(7, col)] = Peca(tipo, (7, col))
             self.tabuleiro[(0, col)] = Peca(tipo, (0, col))
-
 
         for i in range(8):
             self.tabuleiro[(1,i)] = self.board[1][i]
@@ -45,16 +45,11 @@ class Tabuleiro:
                     print(p, end=' ')
             print()
 
-        print(self.tabuleiro)
-
     def valid_moves(self, peca):
         valid = []
 
         if peca.tipo == 'P':
             pass
-
-
-    
 
 
                 
