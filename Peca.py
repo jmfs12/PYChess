@@ -1,7 +1,7 @@
-#classe para as peças
+import pygame
 
 class Peca:
-    def __init__(self, tipo, posicao):
+    def __init__(self, tipo, posicao, resource):
         self.tipo = tipo
         self.posicao = posicao
         self.vivo = True
@@ -10,6 +10,7 @@ class Peca:
         else:
             self.cor = "branco"
         self.inicial = True
+        self.resource = pygame.transform.smoothscale(resource, (80, 80))
 
     def valid(self, tabuleiro):
 
