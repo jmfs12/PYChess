@@ -2,29 +2,25 @@ import pygame as py
 import Interface as it
 
 class Player:
-    def __init__(self, cor, pecas):
+    def __init__(self, cor, tabuleiro):
         self.cor = cor
-        self.pecas = pecas
+        self.tabuleiro = tabuleiro
     
-    def move(self, peca, posicao, tabuleiro, screen) -> bool:
-        movimentos = peca.valid(tabuleiro)
+    def move(self, peca, posicao) -> bool:
+        movimentos = peca.valid(self.tabuleiro)
+        print(movimentos)
 
-        if posicao in movimentos:
+        if posicao in movimentos[0]:
+            print('atualizando o tabuleiro')
+            self.tabuleiro[peca.posicao] = None
+            self.tabuleiro[posicao] = peca
 
-            tabuleiro[peca.posicao] = None
-            tabuleiro[posicao] = peca
-            linha, col = peca.posicao
-
-            py.draw.rect(
-                screen,
-                py.Color('#EEEED2') if (linha+col)%2 == 0 else py.Color('#769656'),
-                py.Rect(col*80, linha*80, 80, 80) 
-            )
-
-            screen.blit(peca.resource, (col*80, linha*80))
-
-            peca.posicao=posicao
+            peca.posicao = posicao
             peca.inicial = False
 
+            print('movimentação feita')
             return True
+
+        print('movimentação recusada')
         return False
+
