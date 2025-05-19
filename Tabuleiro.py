@@ -49,12 +49,6 @@ class Tabuleiro:
                     print(p, end=' ')
             print()
 
-    def valid_moves(self, peca):
-        valid = []
-
-        if peca.tipo == 'P':
-            pass
-
     def move(self, peca, posicao) -> bool:
         movimentos = peca.valid(self.tabuleiro)
         print(movimentos)

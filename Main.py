@@ -15,6 +15,8 @@ highlighted_square = None
 prev = None
 running = True
 
+turn = 'branco'
+
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -23,16 +25,22 @@ while running:
             x, y = pygame.mouse.get_pos()
             highlighted_square = interface.get_square_at_position(x, y)
             
-            if table.tabuleiro[highlighted_square] is not None:
+            if table.tabuleiro[highlighted_square] is not None and prev is None:
                 prev = highlighted_square
                 print('clique na peca')
             
-            elif table.tabuleiro[highlighted_square] is None and prev is not None and table.tabuleiro[prev] is not None:
-                print('movimentacao de ', prev, ' para ', highlighted_square)
-                sucesso = table.move(table.tabuleiro[prev], highlighted_square)
-                if sucesso:
-                    prev = None 
-
+            elif prev is not None and table.tabuleiro[prev] is not None and (table.tabuleiro[highlighted_square] is None or table.tabuleiro[highlighted_square].cor != table.tabuleiro[prev].cor):
+                if(turn == table.tabuleiro[prev].cor):
+                    print('movimentacao de ', table.tabuleiro[prev].tipo, table.tabuleiro[prev].cor, ' para ', highlighted_square)
+                    turn = 'branco' if table.tabuleiro[prev].cor == 'preto' else 'preto'
+                    sucesso = table.move(table.tabuleiro[prev], highlighted_square)
+                else:
+                    print('movimento de:', turn)
+                prev = None
+                
+            elif prev is not None and table.tabuleiro[prev] == table.tabuleiro[highlighted_square]:
+                prev = highlighted_square
+            
             else:
                 print('branco com branco ou clique inválido')
                 prev = None
