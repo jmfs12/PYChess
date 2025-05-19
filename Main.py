@@ -32,8 +32,9 @@ while running:
             elif prev is not None and table.tabuleiro[prev] is not None and (table.tabuleiro[highlighted_square] is None or table.tabuleiro[highlighted_square].cor != table.tabuleiro[prev].cor):
                 if(turn == table.tabuleiro[prev].cor):
                     print('movimentacao de ', table.tabuleiro[prev].tipo, table.tabuleiro[prev].cor, ' para ', highlighted_square)
-                    turn = 'branco' if table.tabuleiro[prev].cor == 'preto' else 'preto'
                     sucesso = table.move(table.tabuleiro[prev], highlighted_square)
+                    if sucesso:
+                        turn = 'branco' if table.tabuleiro[highlighted_square].cor == 'preto' else 'preto'
                 else:
                     print('movimento de:', turn)
                 prev = None

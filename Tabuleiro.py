@@ -55,15 +55,30 @@ class Tabuleiro:
 
         if posicao in movimentos[0]:
             print('atualizando o tabuleiro')
-            self.tabuleiro[peca.posicao] = None
-            self.tabuleiro[posicao] = peca
+            self.tabuleiro[peca.posicao], self.tabuleiro[posicao] = None, peca
 
-            peca.posicao = posicao
-            peca.inicial = False
+            peca.posicao, peca.inicial = posicao, False
 
             print('movimentação feita')
             return True
 
         print('movimentação recusada')
         return False
+    
+    def verify_check(self, cor):
+
+        pecas_inimigas = []
+        rei = None
+        for peca in self.tabuleiro.values():
+            if peca.tipo == 'RE' and peca.cor == cor:
+                rei = peca
+            if peca.cor != cor and peca.vivo:
+                pecas_inimigas.append(peca)
+            
+        movimentos_inimigo = []
+        for peca in pecas_inimigas:
+            movimentos_inimigo.extend(peca.valid(self.tabuleiro))
+
+        return rei.posicao in movimentos_inimigo
                 
+        
