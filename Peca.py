@@ -4,13 +4,13 @@ class Peca:
     def __init__(self, tipo, posicao, resource):
         self.tipo = tipo
         self.posicao = posicao
-        self.vivo = True
         if posicao[0] == 0 or posicao[0] == 1:
             self.cor = "preto"
         else:
             self.cor = "branco"
         self.inicial = True
         self.resource = pygame.transform.smoothscale(resource, (80, 80))
+        
 
     def valid(self, tabuleiro):
 
@@ -94,34 +94,48 @@ class Peca:
             direcoes = [(-1,0),(1,0),(0,-1),(0,1),(1,-1),(1,1),(-1,1),(-1,-1)]
 
             for l, c in direcoes:
-
                 movimento = (linha+l, coluna+c)
 
                 if movimento in tabuleiro:
-
-                    if tabuleiro[(movimento)] is None:
+                    if tabuleiro[(movimento)] is None or tabuleiro[movimento].cor != self.cor:
                         movimentos.append(movimento)
 
-                    elif tabuleiro[movimento] is not None and tabuleiro[movimento].cor != self.cor:
-                        movimentos.append(movimento)
-
-            posicao_torre = [(7,7),(7,0)] if self.cor == 'branco' else [(0,7),(0,0)]
+            # Verificação de Roque
+            posicao_torre = [(linha, 7), (linha, 0)]
+            roque_valido = False
             if self.inicial:
-                for torre in posicao_torre:
-                    if tabuleiro[torre] is not None and tabuleiro[torre].inicial:
-                        flag, c = False, coluna
-                        while not flag and c != torre[1]:
-                            c = c+1 if coluna < torre[1] else c-1
-                            if tabuleiro[(linha, c)] is not None:
-                                flag = True
+                for torre_pos in posicao_torre:
+                    torre = tabuleiro.get(torre_pos)
+                    if torre and torre.tipo == 'T' and torre.inicial:
+                        col_torre = torre_pos[1]
+                        passo = 1 if col_torre > coluna else -1
 
-                        if not flag:
-                            col = coluna + 2 if torre[1] > coluna else coluna - 2
-                            movimentos.append((linha,col))
-                return movimentos, 'roque'
+                        # Verifica se há peças entre rei e torre
+                        caminho_livre = True
+                        for c in range(coluna + passo, col_torre, passo):
+                            if tabuleiro.get((linha, c)) is not None:
+                                caminho_livre = False
+                                break
 
-                
-            return movimentos, None
+                        # Verifica se o rei está ou passará por xeque
+                        if caminho_livre:
+                            casas_passadas = [(linha, coluna), (linha, coluna + passo), (linha, coluna + 2*passo)]
+                            em_check = False
+                            for casa in casas_passadas:
+                                temp_pos = self.posicao
+                                self.posicao = casa
+                                if any(casa in inimigo.valid(tabuleiro)[0] for inimigo in tabuleiro.values() if inimigo and inimigo.cor != self.cor):
+                                    em_check = True
+                                self.posicao = temp_pos
+                                if em_check:
+                                    break
+
+                            if not em_check:
+                                movimentos.append((linha, coluna + 2*passo))
+                                roque_valido = True
+
+            return movimentos, 'roque' if roque_valido else None
+
     
         elif self.tipo == 'T':
             linha, coluna = self.posicao
@@ -145,19 +159,5 @@ class Peca:
                         break
 
                     movimento = (movimento[0]+l, movimento[1]+c)
-            
-            rei = (7,4) if self.cor == 'branco' else (0,4)
-            if self.inicial:
-                if tabuleiro[rei] is not None and tabuleiro[rei].inicial:
-                    flag, c = False, coluna
-                    while not flag and c != rei[1]:
-                        c = c+1 if coluna < rei[1] else c-1
-                        if tabuleiro[(linha, c)] is not None:
-                            flag = True
-
-                    if not flag:
-                        col = coluna + 2 if rei[1] > coluna else coluna - 2
-                        movimentos.append((linha,col))
-                return movimentos, 'roque'
 
             return movimentos, None

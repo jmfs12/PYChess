@@ -50,15 +50,46 @@ class Tabuleiro:
             print()
 
     def move(self, peca, posicao) -> bool:
-        movimentos = peca.valid(self.tabuleiro)
+        movimentos, tipo_mov = peca.valid(self.tabuleiro)
         print(movimentos)
 
-        if posicao in movimentos[0]:
-            print('atualizando o tabuleiro')
+        print('verificando a movimentacao')
+        if posicao in movimentos or tipo_mov == 'roque':
+            tab_antes = self.tabuleiro[posicao]
             self.tabuleiro[peca.posicao], self.tabuleiro[posicao] = None, peca
+            origem = peca.posicao
 
+            posicao_ant, inicial_ant = peca.posicao, peca.inicial
             peca.posicao, peca.inicial = posicao, False
 
+            if self.verify_check(peca.cor):
+                print('rei em check')
+                self.tabuleiro[posicao_ant], self.tabuleiro[posicao] = peca, tab_antes
+                peca.posicao, peca.inicial = posicao_ant, inicial_ant
+                print('movimentacao recusada')
+                return False
+                
+            if tipo_mov == 'roque' and peca.tipo == 'RE':
+                linha = origem[0]
+                if posicao[1] == 6:  # Roque pequeno
+                    torre_origem = (linha, 7)
+                    torre_destino = (linha, 5)
+                elif posicao[1] == 2:  # Roque grande
+                    torre_origem = (linha, 0)
+                    torre_destino = (linha, 3)
+                else:
+                    print("Erro: posição de roque inválida")
+                    return False
+
+                torre = self.tabuleiro[torre_origem]
+                if torre and torre.tipo == 'T':
+                    self.tabuleiro[torre_origem] = None
+                    self.tabuleiro[torre_destino] = torre
+                    torre.posicao = torre_destino
+                    torre.inicial = False
+                else:
+                    print("Erro: torre não encontrada no roque")
+                    return False
             print('movimentação feita')
             return True
 
@@ -70,15 +101,39 @@ class Tabuleiro:
         pecas_inimigas = []
         rei = None
         for peca in self.tabuleiro.values():
-            if peca.tipo == 'RE' and peca.cor == cor:
-                rei = peca
-            if peca.cor != cor and peca.vivo:
-                pecas_inimigas.append(peca)
+            if peca is not None:
+                if peca.tipo == 'RE' and peca.cor == cor:
+                    rei = peca
+                if peca.cor != cor:
+                    pecas_inimigas.append(peca)
             
         movimentos_inimigo = []
         for peca in pecas_inimigas:
-            movimentos_inimigo.extend(peca.valid(self.tabuleiro))
+            movimentos, _ = peca.valid(self.tabuleiro)
+            movimentos_inimigo.extend(movimentos)
 
         return rei.posicao in movimentos_inimigo
+
+    def not_have_moves(self, cor):
+        for peca in self.tabuleiro.values():
+            if peca is not None and peca.cor == cor:
+                movimentos, _ = peca.valid(self.tabuleiro)
+                for destino in movimentos:
+                    # Tenta simular o movimento
+                    origem = peca.posicao
+                    peca_original = self.tabuleiro[destino]
+                    self.tabuleiro[origem], self.tabuleiro[destino] = None, peca
+                    peca.posicao = destino
+
+                    em_check = self.verify_check(cor)
+
+                    # Reverte o movimento
+                    self.tabuleiro[origem], self.tabuleiro[destino] = peca, peca_original
+                    peca.posicao = origem
+
+                    if not em_check:
+                        return False  # Existe pelo menos um movimento legal
+        return True  # Nenhuma peça pode se mover sem deixar o rei em check
+
                 
         

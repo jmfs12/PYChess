@@ -35,13 +35,40 @@ while running:
                     sucesso = table.move(table.tabuleiro[prev], highlighted_square)
                     if sucesso:
                         turn = 'branco' if table.tabuleiro[highlighted_square].cor == 'preto' else 'preto'
+                        if table.verify_check(turn):
+                            if table.not_have_moves(turn):
+                                print('o jogador ', table.tabuleiro[highlighted_square].cor, 'ganhou')
+                            else:
+                                print('rei de ', turn, ' em check')
+                        highlighted_square = None
+                    else:
+                        highlighted_square = None
                 else:
                     print('movimento de:', turn)
+                    highlighted_square = None
                 prev = None
                 
             elif prev is not None and table.tabuleiro[prev] == table.tabuleiro[highlighted_square]:
                 prev = highlighted_square
             
+            elif prev is not None and highlighted_square is not None and table.tabuleiro[prev].cor == table.tabuleiro[highlighted_square].cor and (table.tabuleiro[prev].tipo == 'RE' and table.tabuleiro[highlighted_square].tipo == 'T'):
+                if(turn == table.tabuleiro[prev].cor):  
+                    print('roque')
+                    if highlighted_square[1] == 7:
+                        highlighted_square = (highlighted_square[0], 6)
+                    elif highlighted_square[1] == 0:
+                        highlighted_square = (highlighted_square[0], 2)
+
+                    sucesso = table.move(table.tabuleiro[prev], highlighted_square)
+                    if sucesso:
+                        turn = 'branco' if table.tabuleiro[highlighted_square].cor == 'preto' else 'preto'
+                        highlighted_square = None
+                    else:
+                        print('movimento de:', turn)
+                        highlighted_square = None
+                    prev = None
+                else:
+                    print
             else:
                 print('branco com branco ou clique inválido')
                 prev = None
