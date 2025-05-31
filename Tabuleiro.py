@@ -106,6 +106,11 @@ class Tabuleiro:
                 else:
                     print("Erro: torre não encontrada no roque")
                     return False
+                
+            if peca.tipo == 'P':
+                if (peca.cor == 'branco' and linha_destino == 0) or (peca.cor == 'preto' and linha_destino == 7):
+                    self.tabuleiro[linha_destino][coluna_destino] = Peca('RA', (linha_destino, coluna_destino), py.image.load(f"resource/rainha_{peca.cor}.png"))
+                    self.tabuleiro[linha_destino][coluna_destino].cor = peca.cor
             print("movimentação feita")
             return True
 
