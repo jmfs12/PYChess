@@ -1,7 +1,6 @@
 import pygame
 
 class it:
-
     def __init__(self, screen):
         self.screen = screen
 
@@ -19,10 +18,9 @@ class it:
                 else:
                     pygame.draw.rect(self.screen, color, rect)
 
-        for posicao, peca in table.items():
-            if peca is not None:
-                row, col = posicao
-                self.screen.blit(peca.resource, (col * square_size, row * square_size))
+                peca = table[row][col]
+                if peca is not None:
+                    self.screen.blit(peca.resource, (col * square_size, row * square_size))
 
     def get_square_at_position(self, x, y):
         square_size = 80
