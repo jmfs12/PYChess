@@ -31,6 +31,10 @@ cd PYChess
 ```bash
 pip install -r requirements.txt
 ```
+3. Rode o jogo
+```bash
+python Main.py
+```
 
 ## 🗂️ Estrutura
 ```graphql
