@@ -68,11 +68,6 @@ def main():
                                 )
                                 if table.verify_check(turn):
                                     if table.not_have_moves(turn):
-                                        print(
-                                            "o jogador ",
-                                            table.tabuleiro[linha][coluna].cor,
-                                            "ganhou",
-                                        )
                                         interface.draw_winner(table.tabuleiro[linha][coluna].cor)
                                         pygame.display.flip()
                                         pygame.time.wait(5000)

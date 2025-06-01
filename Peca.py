@@ -153,7 +153,7 @@ class Peca:
                                         if (
                                             p
                                             and p.cor != self.cor
-                                            and casa in p.valid(tabuleiro, ignorar_roque=True)[0]
+                                            and casa in p.valid(tabuleiro, ultimo_movimento, ignorar_roque=True)[0]
                                         ):
                                             em_check = True
                                 if em_check:
