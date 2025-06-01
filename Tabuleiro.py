@@ -52,6 +52,8 @@ class Tabuleiro:
             for coluna in range(8)
         }
 
+        self.ultimo_movimento = None
+
     def print_board(self):
         for linha in self.tabuleiro:
             for peca in linha:
@@ -62,10 +64,9 @@ class Tabuleiro:
             print()
 
     def move(self, peca, posicao) -> bool:
-        movimentos, tipo_mov = peca.valid(self.tabuleiro)
-        print(movimentos)
+        movimentos, tipo_mov = peca.valid(self.tabuleiro, self.ultimo_movimento)
+        print('movimento ', movimentos)
 
-        print("verificando a movimentacao")
         if posicao in movimentos or tipo_mov == "roque":
             linha_origem, coluna_origem = peca.posicao
             linha_destino, coluna_destino = posicao
@@ -106,6 +107,16 @@ class Tabuleiro:
                 else:
                     print("Erro: torre não encontrada no roque")
                     return False
+
+            if tipo_mov == 'en passant':
+                # En passant
+                print("en passant")
+                linha_capturada = origem[0] if peca.cor == 'branco' else origem[0]
+                pos_captura = (linha_capturada, posicao[1])
+                self.tabuleiro[pos_captura[0]][pos_captura[1]] = None
+
+            self.ultimo_movimento = (peca, origem, posicao)
+            print(self.ultimo_movimento[0].tipo, ' ', self.ultimo_movimento[1], ' ', self.ultimo_movimento[2])                
                 
             if peca.tipo == 'P':
                 if (peca.cor == 'branco' and linha_destino == 0) or (peca.cor == 'preto' and linha_destino == 7):
@@ -130,7 +141,7 @@ class Tabuleiro:
 
         movimentos_inimigo = []
         for peca in pecas_inimigas:
-            movimentos, _ = peca.valid(self.tabuleiro)
+            movimentos, _ = peca.valid(self.tabuleiro, self.ultimo_movimento)
             movimentos_inimigo.extend(movimentos)
 
         return rei.posicao in movimentos_inimigo
@@ -139,7 +150,7 @@ class Tabuleiro:
         for linha in self.tabuleiro:
             for peca in linha:
                 if peca is not None and peca.cor == cor:
-                    movimentos, _ = peca.valid(self.tabuleiro)
+                    movimentos, _ = peca.valid(self.tabuleiro, self.ultimo_movimento)
                     for destino in movimentos:
                         origem = peca.posicao
                         linha_destino, coluna_destino = destino

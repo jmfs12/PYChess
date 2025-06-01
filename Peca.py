@@ -11,11 +11,12 @@ class Peca:
         self.inicial = True
         self.resource = pygame.transform.smoothscale(resource, (80, 80))
 
-    def valid(self, tabuleiro, ignorar_roque=False):
+    def valid(self, tabuleiro, ultimo_movimento, ignorar_roque=False):
         linha, coluna = self.posicao
         movimentos = []
 
         if self.tipo == "P":
+            en_passant = None
             direcao = -1 if self.cor == "branco" else 1
             frente = (linha + direcao, coluna)
             if 0 <= frente[0] < 8 and 0 <= frente[1] < 8 and tabuleiro[frente[0]][frente[1]] is None:
@@ -37,7 +38,35 @@ class Peca:
                     if alvo is not None and alvo.cor != self.cor:
                         movimentos.append(diag)
 
-            return movimentos, None
+            # Verifica se pode capturar en passant
+            if self.cor == 'branco' and self.posicao[0] == 3:
+                for dx in [-1, 1]:
+                    lado = (self.posicao[0], self.posicao[1] + dx)
+                    if 0 <= lado[0] < 8 and 0 <= lado[1] < 8 and tabuleiro[lado[0]][lado[1]] is not None:
+                        peca_lado = tabuleiro[lado[0]][lado[1]]
+                        if (
+                            peca_lado.tipo == 'P'
+                            and peca_lado.cor != self.cor
+                            and ultimo_movimento == (peca_lado, (1, lado[1]), lado)
+                        ):
+                            movimentos.append((2, lado[1]))  # Casa atrás do peão inimigo
+                            en_passant = "en passant"
+
+            elif self.cor == 'preto' and self.posicao[0] == 4:
+                for dx in [-1, 1]:
+                    lado = (self.posicao[0], self.posicao[1] + dx)
+                    if lado in tabuleiro and tabuleiro[lado[0]][lado[1]] is not None:
+                        peca_lado = tabuleiro[lado[0]][lado[1]]
+                        if (
+                            peca_lado.tipo == 'P'
+                            and peca_lado.cor != self.cor
+                            and ultimo_movimento == (peca_lado, (6, lado[1]), lado)
+                        ):
+                            movimentos.append((5, lado[1]))  # Casa atrás do peão inimigo
+                            en_passant = "en passant"   
+
+
+            return movimentos, en_passant
 
         elif self.tipo in ("B", "RA"):
             direcoes = (

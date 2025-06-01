@@ -29,6 +29,7 @@ def main():
     color = colors[0]
     i=0
 
+
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -42,7 +43,6 @@ def main():
 
                 if peca_atual is not None and prev is None:
                     prev = highlighted_square
-                    print("clique na peca")
 
                 elif prev is not None:
                     linha_prev, coluna_prev = prev
