@@ -1,6 +1,5 @@
 import pygame
 
-
 class Peca:
     def __init__(self, tipo, posicao, resource):
         self.tipo = tipo
@@ -12,29 +11,28 @@ class Peca:
         self.inicial = True
         self.resource = pygame.transform.smoothscale(resource, (80, 80))
 
-    def dentro_limites(self, linha, coluna):
-        return 0 <= linha < 8 and 0 <= coluna < 8
-
-    def valid(self, tabuleiro):
+    def valid(self, tabuleiro, ignorar_roque=False):
         linha, coluna = self.posicao
         movimentos = []
 
         if self.tipo == "P":
             direcao = -1 if self.cor == "branco" else 1
             frente = (linha + direcao, coluna)
-            if self.dentro_limites(*frente) and tabuleiro[frente[0]][frente[1]] is None:
+            if 0 <= frente[0] < 8 and 0 <= frente[1] < 8 and tabuleiro[frente[0]][frente[1]] is None:
                 movimentos.append(frente)
                 linha_inicial = 6 if self.cor == "branco" else 1
                 duas_frente = (linha + 2 * direcao, coluna)
                 if (
                     linha == linha_inicial
+                    and 0 <= duas_frente[0] < 8
+                    and 0 <= duas_frente[1] < 8
                     and tabuleiro[duas_frente[0]][duas_frente[1]] is None
                 ):
                     movimentos.append(duas_frente)
 
             for dc in [-1, 1]:
                 diag = (linha + direcao, coluna + dc)
-                if self.dentro_limites(*diag):
+                if 0 <= diag[0] < 8 and 0 <= diag[1] < 8:
                     alvo = tabuleiro[diag[0]][diag[1]]
                     if alvo is not None and alvo.cor != self.cor:
                         movimentos.append(diag)
@@ -58,7 +56,7 @@ class Peca:
             )
             for l, c in direcoes:
                 mov_linha, mov_coluna = linha + l, coluna + c
-                while self.dentro_limites(mov_linha, mov_coluna):
+                while 0 <= mov_linha < 8 and 0 <= mov_coluna < 8:
                     alvo = tabuleiro[mov_linha][mov_coluna]
                     if alvo is None:
                         movimentos.append((mov_linha, mov_coluna))
@@ -84,33 +82,17 @@ class Peca:
             ]
             for l, c in direcoes:
                 nl, nc = linha + l, coluna + c
-                if self.dentro_limites(nl, nc):
+                if 0 <= nl < 8 and 0 <= nc < 8:
                     alvo = tabuleiro[nl][nc]
                     if alvo is None or alvo.cor != self.cor:
                         movimentos.append((nl, nc))
             return movimentos, None
 
         elif self.tipo == "RE":
-            direcoes = [
-                (-1, 0),
-                (1, 0),
-                (0, -1),
-                (0, 1),
-                (1, -1),
-                (1, 1),
-                (-1, 1),
-                (-1, -1),
-            ]
-            for l, c in direcoes:
-                nl, nc = linha + l, coluna + c
-                if self.dentro_limites(nl, nc):
-                    alvo = tabuleiro[nl][nc]
-                    if alvo is None or alvo.cor != self.cor:
-                        movimentos.append((nl, nc))
-
+            ...
             roque_valido = False
             posicao_torre = [(linha, 0), (linha, 7)]
-            if self.inicial:
+            if not ignorar_roque and self.inicial:
                 for torre_pos in posicao_torre:
                     t_col = torre_pos[1]
                     torre = tabuleiro[linha][t_col]
@@ -133,7 +115,7 @@ class Peca:
                                         if (
                                             p
                                             and p.cor != self.cor
-                                            and casa in p.valid(tabuleiro)[0]
+                                            and casa in p.valid(tabuleiro, ignorar_roque=True)[0]
                                         ):
                                             em_check = True
                                 if em_check:
@@ -144,11 +126,12 @@ class Peca:
                                 roque_valido = True
             return movimentos, "roque" if roque_valido else None
 
+
         elif self.tipo == "T":
             direcoes = [(-1, 0), (1, 0), (0, -1), (0, 1)]
             for l, c in direcoes:
                 mov_linha, mov_coluna = linha + l, coluna + c
-                while self.dentro_limites(mov_linha, mov_coluna):
+                while 0 <= mov_linha < 8 and 0 <= mov_coluna < 8:
                     alvo = tabuleiro[mov_linha][mov_coluna]
                     if alvo is None:
                         movimentos.append((mov_linha, mov_coluna))
