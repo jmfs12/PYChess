@@ -5,8 +5,8 @@ class it:
     def __init__(self, screen):
         self.screen = screen
 
-    def draw_board(self, highlight=None, table=None):
-        colors = [pygame.Color("#EEEED2"), pygame.Color("#769656")]
+    def draw_board(self, highlight=None, table=None, color=None):
+        colors = [pygame.Color(color[0]), pygame.Color(color[1])]
         square_size = 80
 
         for row in range(8):

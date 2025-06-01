@@ -18,6 +18,17 @@ def main():
 
     turn = "branco"
 
+    colors = [
+        ("#EEEED2", "#769656"),
+        ("#E0F7FA","#006064"),
+        ("#2E2E2E","#121212"),
+        ("#D7CCC8","#5D4037"),
+        ("#F8E8EE","#B8A1C1")
+    ]
+
+    color = colors[0]
+    i=0
+
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -110,8 +121,15 @@ def main():
                         print("branco com branco ou clique invalido")
                         prev = None
                         highlighted_square = None
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_c:
+                    if i < 4: 
+                        i+=1
+                    else:
+                        i=0
+                    color = colors[i]
 
-        interface.draw_board(highlighted_square, table.tabuleiro)
+        interface.draw_board(highlighted_square, table.tabuleiro,color)
         pygame.display.flip()
 
     pygame.quit()
