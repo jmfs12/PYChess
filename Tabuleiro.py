@@ -85,7 +85,7 @@ class Tabuleiro:
                 print("movimentacao recusada")
                 return False
 
-            if tipo_mov == "roque" and peca.tipo == "RE":
+            if tipo_mov == "roque" and peca.tipo == "RE" and (coluna_destino == 6 or coluna_destino == 2):
                 linha = origem[0]
                 if coluna_destino == 6:
                     torre_origem = (linha, 7)

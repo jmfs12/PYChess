@@ -89,7 +89,16 @@ class Peca:
             return movimentos, None
 
         elif self.tipo == "RE":
-            ...
+            movimentos = []
+            direcoes = [(-1, 0),(1, 0),(0, -1),(0, 1),(1, -1),(1, 1),(-1, 1),(-1, -1)]
+            for l, c in direcoes:
+                mov_linha, mov_coluna = linha + l, coluna + c
+                if 0 <= mov_linha < 8 and 0 <= mov_coluna < 8:
+                    alvo = tabuleiro[mov_linha][mov_coluna]
+                    if alvo is None or alvo.cor != self.cor:
+                        movimentos.append((mov_linha, mov_coluna))
+
+
             roque_valido = False
             posicao_torre = [(linha, 0), (linha, 7)]
             if not ignorar_roque and self.inicial:
