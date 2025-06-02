@@ -99,6 +99,14 @@ def main():
                                         running = False
                                     else:
                                         print("rei de ", turn, " em xeque")
+                                # verifica afogamento/empate
+                                elif table.not_have_moves(turn):
+                                    interface.draw()
+                                    pygame.display.flip()
+                                    pygame.time.wait(5000)
+                                    running = False
+                                else:
+                                    print("movimento de:", turn)
                                 highlighted_square = None
                             else:
                                 highlighted_square = None

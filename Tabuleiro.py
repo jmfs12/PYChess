@@ -72,7 +72,7 @@ class Tabuleiro:
     # Retorna True se o movimento foi feito, False caso contrário
     def move(self, peca, posicao) -> bool:
         movimentos, tipo_mov = peca.valid(self.tabuleiro, self.ultimo_movimento)
-        print('movimento ', movimentos)
+        print('movimentos validos para a peça: ', peca.tipo, peca.cor, ' ', movimentos)
 
         # Verifica se o movimento é permitido ou se é roque
         if posicao in movimentos or tipo_mov == "roque":

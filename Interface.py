@@ -64,4 +64,18 @@ class it:
         self.screen.blit(overlay, (0, 0))
         self.screen.blit(texto_surface, texto_rect)
 
+    def draw(self):
+        font = pygame.font.SysFont("Arial", 48, bold=True)
+        texto = "Empate"
+        texto_surface = font.render(texto, True, pygame.Color('white'))
+        texto_rect = texto_surface.get_rect(center=(640 // 2, 640 // 2))
+
+        # Fundo semi-transparente
+        overlay = pygame.Surface((640, 640))
+        overlay.set_alpha(180)  # Transparência
+        overlay.fill((0, 0, 0))  # Cor preta
+
+        self.screen.blit(overlay, (0, 0))
+        self.screen.blit(texto_surface, texto_rect)
+
 
