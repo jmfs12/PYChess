@@ -1,6 +1,6 @@
 # ♟️ Jogo de Xadrez em Python
 
-Este é um projeto de jogo de xadrez desenvolvido com **Python** e **Pygame**, com suporte a movimentos básicos e especiais como **Roque**, detecção de **check** e **fim de jogo**.
+Este é um projeto de jogo de xadrez desenvolvido com **Python** e **Pygame**, com suporte a movimentos básicos e especiais como **Roque**, **En Passant**, além da **Promoção** , e detecção de **check** e **fim de jogo**.
 
 ## 🎮 Funcionalidades
 
@@ -8,8 +8,11 @@ Este é um projeto de jogo de xadrez desenvolvido com **Python** e **Pygame**, c
 - Suporte aos movimentos válidos de todas as peças.
 - Detecção de **check**.
 - Execução de **Roque** (curto e longo).
+- Execução de **En passant**.
+- **Promoção** do peão à rainha.
 - Verificação de **fim de jogo** (sem movimentos válidos).
 - Indicação do vencedor na tela.
+- Mudança de cor do tabuleiro ao apertar **C**.  
 
 ## 🧠 Requisitos
 
